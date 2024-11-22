@@ -7,6 +7,9 @@ declare global {
       interface ProcessEnv {
         ADMIN_USERNAME: string;
         ADMIN_PASSWORD: string;
+        JWT_SECRET: string;
       }
     }
 }
+
+export {};

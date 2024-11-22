@@ -16,16 +16,18 @@ export async function POST(request: Request) {
 
     const { username, password } = result.data;
 
-    const usernameMatch = await timingSafeEqual(username, process.env.ADMIN_USERNAME ?? '');
-    const passwordMatch = await timingSafeEqual(password, process.env.ADMIN_PASSWORD ?? '');
+    const usernameMatch = username === process.env.ADMIN_USERNAME;
+    const passwordMatch = password === process.env.ADMIN_PASSWORD;
 
     if (usernameMatch && passwordMatch) {
+      console.log(process.env.JWT_SECRET, username, password);
       const token = await sign(
         {
           sub: username,
+          name: username,
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
         },
-        process.env.JWT_SECRET ?? crypto.randomUUID()
+        process.env.JWT_SECRET
       );
 
       cookies().set("session", token, {
@@ -50,19 +52,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-async function timingSafeEqual(a: string, b: string): Promise<boolean> {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  const aBytes = new TextEncoder().encode(a);
-  const bBytes = new TextEncoder().encode(b);
-
-  return crypto.subtle.digest('SHA-256', aBytes).then(aHash => 
-    crypto.subtle.digest('SHA-256', bBytes).then(bHash => 
-      new Uint8Array(aHash).every((val, i) => val === new Uint8Array(bHash)[i])
-    )
-  );
 }
