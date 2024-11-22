@@ -1,8 +1,7 @@
-interface CloudflareEnv {
-    KV: KVNamespace;
-}
-
 declare global {
+    interface CloudflareEnv {
+      KV: KVNamespace;
+    }
     namespace NodeJS {
       interface ProcessEnv {
         ADMIN_USERNAME: string;
