@@ -1,6 +1,8 @@
 import { LoginForm } from "@/components/login-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+export const runtime = "edge";
+
 export default function Page() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4">

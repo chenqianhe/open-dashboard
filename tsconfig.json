@@ -21,7 +21,7 @@
       "@/*": ["./*"]
     }
   },
-  "types": ["@cloudflare/workers-types/2024-07-29"],
+  "types": ["@cloudflare/workers-types/2024-09-23"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
