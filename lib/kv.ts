@@ -1,7 +1,7 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export async function getConfig() {
-  const kv = getRequestContext().env.KV;
+  const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
   try {
     const config = await kv.get("api_config", "json");
     return config || null;
@@ -12,7 +12,7 @@ export async function getConfig() {
 }
 
 export async function setConfig(config: { baseUrl: string; apiKey: string }) {
-  const kv = getRequestContext().env.KV;
+  const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
   try {
     await kv.put("api_config", JSON.stringify(config));
     return true;

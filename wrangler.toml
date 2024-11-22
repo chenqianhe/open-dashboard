@@ -5,4 +5,4 @@ pages_build_output_dir = ".vercel/output/static"
 
 [[kv_namespaces]]
 binding = "KV"
-id = "open-dashboard"
+id = "OPEN_DASHBOARD_KV"

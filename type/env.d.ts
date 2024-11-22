@@ -1,6 +1,6 @@
 declare global {
     interface CloudflareEnv {
-      KV: KVNamespace;
+      OPEN_DASHBOARD_KV: KVNamespace;
     }
     namespace NodeJS {
       interface ProcessEnv {
