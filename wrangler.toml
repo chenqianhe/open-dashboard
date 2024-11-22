@@ -4,5 +4,5 @@ compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 
 [[kv_namespaces]]
-binding = "KV"
-id = "OPEN_DASHBOARD_KV"
+binding = "OPEN_DASHBOARD_KV"
+id = "open-dashboard"
