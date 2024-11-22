@@ -2,7 +2,3 @@ name = "open-dashboard"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
-
-[[kv_namespaces]]
-binding = "OPEN_DASHBOARD_KV"
-id = "open-dashboard"
