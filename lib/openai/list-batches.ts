@@ -17,7 +17,10 @@ export const listBatches = async (
   if (!refresh) {
     const cached = await kv.get(cacheKey, "json");
     if (cached) {
-      return cached;
+      return {
+        success: true as const,
+        data: cached as OpenAI.Batches.Batch[]
+      };
     }
   }
 
