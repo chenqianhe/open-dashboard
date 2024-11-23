@@ -1,15 +1,14 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import OpenAI from "openai";
+import { getBaseUrlAndKey } from "../get-baseurl-and-key";
+import { getBatchKey } from "@/common/key/get-key";
 
 
 export async function getBatchDetail(batchId: string) {
     const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
-    const config = await kv.get("api_config", "json") as { apiKey: string; baseUrl: string } | null;
-    if (!config || !config.apiKey || !config.baseUrl) {
-        throw new Error("Invalid config");
-    }
+    const config = await getBaseUrlAndKey(kv);
 
-    const cacheKey = `apiKey:${config.apiKey}:batch:${batchId}`
+    const cacheKey = getBatchKey(config.apiKey, batchId);
     const cached = await kv.get(cacheKey, "json");
     if (cached) {
         return {

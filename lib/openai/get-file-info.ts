@@ -1,15 +1,14 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import OpenAI from "openai";
+import { getBaseUrlAndKey } from "../get-baseurl-and-key";
+import { getFileInfoKey } from "@/common/key/get-key";
 
 
 export async function getFileInfo(fileId: string) {
     const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
-    const config = await kv.get("api_config", "json") as { apiKey: string; baseUrl: string } | null;
-    if (!config || !config.apiKey || !config.baseUrl) {
-        throw new Error("Invalid config");
-    }
+    const config = await getBaseUrlAndKey(kv);
 
-    const cacheKey = `apiKey:${config.apiKey}:file:${fileId}`;
+    const cacheKey = getFileInfoKey(config.apiKey, fileId);
     const cached = await kv.get(cacheKey, "json");
     if (cached) {
         return {

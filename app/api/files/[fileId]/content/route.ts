@@ -30,8 +30,10 @@ export async function GET(
   });
 
   try {
-    const fileInfo = await openai.files.retrieve(fileId);
-    const response = await openai.files.content(fileId);
+    const [fileInfo, response] = await Promise.all([
+      openai.files.retrieve(fileId),
+      openai.files.content(fileId)
+    ]);
     const stream = response.body;
 
     if (!stream) {

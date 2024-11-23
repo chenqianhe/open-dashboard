@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { getBaseUrlAndKey } from "../get-baseurl-and-key";
+import { getBatchesKey } from "@/common/key/get-key";
 
 export const listBatches = async (
   offset: number = 0,
@@ -7,13 +9,9 @@ export const listBatches = async (
   refresh: boolean = false
 ) => {
   const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
+  const config = await getBaseUrlAndKey(kv);
 
-  const config = await kv.get("api_config", "json") as { apiKey: string; baseUrl: string } | null;
-  if (!config || !config.apiKey || !config.baseUrl) {
-    throw new Error("Invalid config");
-  }
-
-  const cacheKey = `apiKey:${config.apiKey}:batches:${offset}:${limit}`
+  const cacheKey = getBatchesKey(config.apiKey, offset, limit);
   if (!refresh) {
     const cached = await kv.get(cacheKey, "json");
     if (cached) {

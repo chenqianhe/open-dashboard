@@ -1,3 +1,4 @@
+import { getFilesKeyPerfix } from "@/common/key/get-key";
 import { ServerFileUploadSchema } from "@/common/type/file-upload";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { NextResponse } from "next/server";
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const needClean = await kv.list({ prefix: `apiKey:${config.apiKey}:files:` });
+        const needClean = await kv.list({ prefix: getFilesKeyPerfix(config.apiKey) });
         await Promise.all(needClean.keys.map(async (key) => {
             kv.delete(key.name);
         }));

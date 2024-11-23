@@ -1,3 +1,4 @@
+import { getFileInfoKey, getFilesKeyPerfix } from "@/common/key/get-key";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
@@ -26,11 +27,11 @@ export async function DELETE(request: Request, { params }: { params: { fileId: s
     baseURL: config.baseUrl 
   });
 
-  const cacheKey = `apiKey:${config.apiKey}:file:${fileId}`;
+  const cacheKey = getFileInfoKey(config.apiKey, fileId);
 
   try {
     const response = await openai.files.del(fileId);
-    const needClean = await kv.list({ prefix: `apiKey:${config.apiKey}:files:` });
+    const needClean = await kv.list({ prefix: getFilesKeyPerfix(config.apiKey) });
     const promises = needClean.keys.map(async (key) => {
       kv.delete(key.name);
     });
