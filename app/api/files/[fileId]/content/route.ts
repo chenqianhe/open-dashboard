@@ -30,6 +30,7 @@ export async function GET(
       baseURL: config.baseUrl 
     });
 
+    const fileInfo = await openai.files.retrieve(fileId);
     const response = await openai.files.content(fileId);
     const stream = response.body;
 
@@ -40,7 +41,7 @@ export async function GET(
     return new NextResponse(stream, {
       headers: {
         "Content-Type": "application/json",
-        "Content-Disposition": `attachment; filename="${fileId}.jsonl"`,
+        "Content-Disposition": `attachment; filename="${fileInfo.filename}"`,
         "Transfer-Encoding": "chunked",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET",

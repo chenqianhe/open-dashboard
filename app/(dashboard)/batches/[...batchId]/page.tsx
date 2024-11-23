@@ -17,6 +17,7 @@ import { Fragment } from 'react';
 import { CancelBatchButton } from "../components/CancelBatchButton";
 import { DownloadOutputButton } from "../components/DownloadOutputButton";
 import Link from "next/link";
+import { getFileInfo } from "@/lib/openai/get-file-info";
 
 export const runtime = "edge";
 
@@ -40,6 +41,24 @@ export default async function BatchPage({ params }: BatchPageProps) {
   }
 
   const batchData: OpenAI.Batches.Batch = batch.data;
+
+
+  let outputFileName: string = '';
+  let errorFileName: string = '';
+  if (batchData?.output_file_id) {
+    const outputFileInfo = await getFileInfo(batchData.output_file_id);
+    if (outputFileInfo.success) {
+      outputFileName = outputFileInfo.data.filename;
+    } 
+  }
+  if (batchData?.error_file_id) {
+    const errorFileInfo = await getFileInfo(batchData.error_file_id);
+    if (errorFileInfo.success) {
+      errorFileName = errorFileInfo.data.filename;
+    }
+  }
+
+
   // Generate timeline events
   const timelineEvents = ([
     { timestamp: batchData.created_at ?? 0, status: 'created' },
@@ -120,10 +139,10 @@ export default async function BatchPage({ params }: BatchPageProps) {
           <h3 className="text-sm text-muted-foreground mb-2">Files</h3>
           <div className="grid grid-cols-[160px_1fr] gap-4">
             {[
-              { label: 'Input File', fileId: batchData.input_file_id, icon: FileText },
-              { label: 'Output File', fileId: batchData.output_file_id, icon: FileOutput },
-              { label: 'Error File', fileId: batchData.error_file_id, icon: FileWarning }
-            ].map(({ label, fileId, icon: Icon }) => fileId && (
+              { label: 'Input File', fileId: batchData.input_file_id, icon: FileText, fileName: "" },
+              { label: 'Output File', fileId: batchData.output_file_id, icon: FileOutput, fileName: outputFileName },
+              { label: 'Error File', fileId: batchData.error_file_id, icon: FileWarning, fileName: errorFileName }
+            ].map(({ label, fileId, icon: Icon, fileName }) => fileId && (
               <Fragment key={label}>
                 <h3 className="text-xs text-muted-foreground flex items-center gap-2">
                   <Icon className="h-4 w-4 flex-shrink-0" />
@@ -137,7 +156,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
                   <span 
                     className="text-sm text-primary"
                   >
-                    {fileId}
+                    {fileName || fileId}
                   </span>
                   <ExternalLink className="h-4 w-4 flex-shrink-0" />
                 </Link>

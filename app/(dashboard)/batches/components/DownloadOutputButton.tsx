@@ -11,7 +11,6 @@ export function DownloadOutputButton({ fileId, children, linkMode = false }: Dow
     return linkMode ? (
         <a 
             href={`/api/files/${fileId}/content`} 
-            download={`${fileId}.jsonl`} 
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 hover:underline"
@@ -25,7 +24,6 @@ export function DownloadOutputButton({ fileId, children, linkMode = false }: Dow
         >
             <a 
                 href={`/api/files/${fileId}/content`} 
-                download={`${fileId}.jsonl`} 
                 target="_blank" 
                 rel="noopener noreferrer"
             >
