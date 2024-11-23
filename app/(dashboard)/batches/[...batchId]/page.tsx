@@ -69,12 +69,12 @@ export default async function BatchPage({ params }: BatchPageProps) {
   ] satisfies BatchTimelineEvent[]).filter(event => event.timestamp);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 p-6">
+    <div className="flex flex-col h-full min-h-0">
+      <div className="flex-1 p-6 overflow-auto">
         <div className="space-y-6">
         <div>
           <h2 className="text-sm text-muted-foreground">BATCH</h2>
-          <h1 className="text-2xl font-semibold mt-1">{batchId}</h1>
+          <h1 className="text-2xl font-semibold mt-1 break-all">{batchId}</h1>
         </div>
 
         {/* Status section */}
@@ -151,14 +151,14 @@ export default async function BatchPage({ params }: BatchPageProps) {
                 <Link
                   href={`/files/${fileId}`} 
                   target="_blank"
-                  className="flex items-center gap-1 hover:underline"
+                  className="flex items-center flex-wrap gap-1 hover:underline"
                 >
                   <span 
-                    className="text-sm text-primary"
+                    className="text-sm text-green-600 break-all"
                   >
-                    {fileName || fileId}
+                    {fileName?.replace(".jsonl", "") || fileId}
                   </span>
-                  <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                  <ExternalLink className="h-4 w-4 flex-shrink-0 text-green-600" />
                 </Link>
               </Fragment>
             ))}
@@ -221,7 +221,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
       </div>
       <div className="flex-none h-fit">
         <hr />
-        <div className="px-6 p-2 min-h-14">
+        <div className="px-6 py-2 min-h-14">
           {batchData.status !== 'cancelled' && batchData.status !== 'completed' && batchData.status !== 'failed' && <CancelBatchButton batchId={batchId} />}
           {(batchData.status === 'completed' || 
             batchData.status === 'failed' || 

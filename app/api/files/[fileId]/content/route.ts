@@ -12,24 +12,24 @@ export async function GET(
   const ctx = getRequestContext();
   const kv = ctx.env.OPEN_DASHBOARD_KV;
 
+  const config = await kv.get("api_config", "json") as { 
+    apiKey: string; 
+    baseUrl: string 
+  } | null;
+  
+  if (!config?.apiKey || !config?.baseUrl) {
+    return NextResponse.json(
+      { error: "Invalid configuration" },
+      { status: 500 }
+    );
+  }
+
+  const openai = new OpenAI({ 
+    apiKey: config.apiKey, 
+    baseURL: config.baseUrl 
+  });
+
   try {
-    const config = await kv.get("api_config", "json") as { 
-      apiKey: string; 
-      baseUrl: string 
-    } | null;
-    
-    if (!config?.apiKey || !config?.baseUrl) {
-      return NextResponse.json(
-        { error: "Invalid configuration" },
-        { status: 500 }
-      );
-    }
-
-    const openai = new OpenAI({ 
-      apiKey: config.apiKey, 
-      baseURL: config.baseUrl 
-    });
-
     const fileInfo = await openai.files.retrieve(fileId);
     const response = await openai.files.content(fileId);
     const stream = response.body;

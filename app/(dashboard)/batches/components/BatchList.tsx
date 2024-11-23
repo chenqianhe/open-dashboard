@@ -25,7 +25,7 @@ export function BatchList({ batches }: BatchListProps) {
         >
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <p className={cn("font-medium", selectedBatchId === batch.id && "font-bold")}>
+              <p className={cn("font-medium break-all", selectedBatchId === batch.id && "font-bold")}>
                 {batch.id}
               </p>
               <p className="text-sm text-muted-foreground">

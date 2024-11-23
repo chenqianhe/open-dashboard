@@ -8,10 +8,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full min-h-0">
       <SidebarProvider>
         <AppSidebar />
-        <main className="flex-1 h-screen flex flex-col px-4 py-2">
+        <main className="flex-1 h-screen flex flex-col px-4 py-2 min-h-0">
           <div className="flex-none flex flex-row items-center gap-2">
             <SidebarTrigger />
             <BreadcrumbNav />

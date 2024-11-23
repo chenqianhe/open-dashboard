@@ -14,7 +14,7 @@ export default async function BatchesLayout({
 
   return (
     <BatchesProvider batches={batchesResult.success ? batchesResult.data : []}>
-      <div className="flex flex-col h-full">
+      <div className="flex-1 flex flex-col h-full min-h-0">
           {/* Header - full width */}
         <div className="flex items-center justify-between p-4 border-b">
             <h1 className="text-xl font-semibold">Batches</h1>
@@ -31,7 +31,7 @@ export default async function BatchesLayout({
         {/* Content area - split into two columns */}
         <div className="flex-1 min-h-0 min-w-0 grid grid-cols-2">
             {/* Left sidebar - 50% width */}
-            <div className="border-r">
+            <div className="border-r min-h-0">
                 <nav className="overflow-y-auto h-full w-full">
                     {batchesResult.success ? (
                     <BatchList batches={batchesResult.data} />
