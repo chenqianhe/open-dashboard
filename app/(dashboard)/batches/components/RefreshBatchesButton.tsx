@@ -20,7 +20,7 @@ export function RefreshBatchesButton() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-        const batchesResult = await fetch("/api/batches?refresh=true");
+        const batchesResult = await fetch("/api/batches?refresh=true&limit=100&offset=0");
         if (batchesResult.ok) {
             const batches = await batchesResult.json() as { success: boolean, data: OpenAI.Batches.Batch[], error?: string };
             if (batches.success) {

@@ -14,7 +14,7 @@ export default async function BatchesLayout({
 }: { 
   children: React.ReactNode;
 }) {
-  const batchesResult = await listBatches();
+  const batchesResult = await listBatches(0, 100);
 
   return (
     <BatchesProvider initialBatches={batchesResult.success ? batchesResult.data : []}>

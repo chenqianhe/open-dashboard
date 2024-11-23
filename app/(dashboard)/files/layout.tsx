@@ -13,7 +13,7 @@ export default async function FilesLayout({
 }: { 
   children: React.ReactNode;
 }) {
-  const filesResult = await listFiles();
+  const filesResult = await listFiles(0, 100);
 
   return (
     <FilesProvider files={filesResult.success ? filesResult.data : []}>
