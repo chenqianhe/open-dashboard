@@ -1,17 +1,56 @@
+import { getBatchDetail } from "@/lib/openai/get-batch-detail";
+import { BatchStatusBadge } from "../components/BatchStatusBadge";
+import OpenAI from "openai";
+import { 
+  Clock, 
+  Calendar, 
+  Link2, 
+  Timer,
+  CheckCircle2,
+  BarChart3,
+  FileText,
+  FileOutput,
+  FileWarning,
+  ExternalLink
+} from "lucide-react";
+import { Fragment } from 'react';
+import { Button } from "@/components/ui/button";
+
 export const runtime = "edge";
 
 interface BatchPageProps {
   params: {
-    batchId: string[]
+    batchId: string[];
   }
 }
 
-export default function BatchPage({ params }: BatchPageProps) {
-  const batchId = params.batchId[0]
+interface BatchTimelineEvent {
+  timestamp: number;
+  status: 'created' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+}
+
+export default async function BatchPage({ params }: BatchPageProps) {
+  const batchId = params.batchId[0];
+  const batch = await getBatchDetail(batchId);
+
+  if (!batch.success) {
+    return <div>Error: {batch.error}</div>;
+  }
+
+  const batchData: OpenAI.Batches.Batch = batch.data;
+  // Generate timeline events
+  const timelineEvents = ([
+    { timestamp: batchData.created_at ?? 0, status: 'created' },
+    { timestamp: batchData.in_progress_at ?? 0, status: 'in_progress' },
+    { timestamp: batchData.completed_at ?? 0, status: 'completed' },
+    { timestamp: batchData.failed_at ?? 0, status: 'failed' },
+    { timestamp: batchData.cancelled_at ?? 0, status: 'cancelled' },
+  ] satisfies BatchTimelineEvent[]).filter(event => event.timestamp);
 
   return (
-    <div className="p-6">
-      <div className="space-y-6">
+    <div className="flex flex-col h-full">
+      <div className="flex-1 p-6">
+        <div className="space-y-6">
         <div>
           <h2 className="text-sm text-muted-foreground">BATCH</h2>
           <h1 className="text-2xl font-semibold mt-1">{batchId}</h1>
@@ -19,31 +58,169 @@ export default function BatchPage({ params }: BatchPageProps) {
 
         {/* Status section */}
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm text-muted-foreground">Status</h3>
-              {/* Status badge will go here */}
+          <div className="grid grid-cols-[160px_1fr] gap-4">
+            {/* Status row */}
+            <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+              <span>Status</span>
+            </h3>
+            <div className="w-fit -top-2">
+                <BatchStatusBadge status={batchData.status} />
             </div>
-            <div>
-              <h3 className="text-sm text-muted-foreground">Created at</h3>
-              {/* Created at timestamp will go here */}
-            </div>
-            {/* Other details will be added here */}
+
+            {/* Created at row */}
+            <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+              <Calendar className="h-4 w-4 flex-shrink-0" />
+              <span>Created at</span>
+            </h3>
+            <p className="text-sm">{new Date(batchData.created_at * 1000).toLocaleString()}</p>
+
+            {/* Endpoint row */}
+            <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+              <Link2 className="h-4 w-4 flex-shrink-0" />
+              <span>Endpoint</span>
+            </h3>
+            <p className="text-sm">{batchData.endpoint}</p>
+
+            {/* Completion window row */}
+            <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+              <Timer className="h-4 w-4 flex-shrink-0" />
+              <span>Completion window</span>
+            </h3>
+            <p className="text-sm">{batchData.completion_window}</p>
+
+            {/* Completion time row */}
+            <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+              <Clock className="h-4 w-4 flex-shrink-0" />
+              <span>Completion time</span>
+            </h3>
+            <p className="text-sm">
+              {batchData.completed_at || batchData.failed_at || batchData.cancelled_at
+                ? getCompletionTime(batchData.created_at, batchData.completed_at || batchData.failed_at || batchData.cancelled_at || batchData.created_at)
+                : 'In progress'}
+            </p>
+
+            {/* Request counts row */}
+            <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 flex-shrink-0" />
+              <span>Request counts</span>
+            </h3>
+            <p className="text-sm">
+              {batchData.request_counts?.completed} completed, &nbsp;
+              {batchData.request_counts?.failed} failed of {batchData.request_counts?.total} total requests
+            </p>
           </div>
         </div>
 
-        {/* Files section */}
+        <hr className="my-6" />
+
         <div>
           <h3 className="text-sm text-muted-foreground mb-2">Files</h3>
-          {/* Files list will go here */}
+          <div className="grid grid-cols-[160px_1fr] gap-4">
+            {[
+              { label: 'Input File', fileId: batchData.input_file_id, icon: FileText },
+              { label: 'Output File', fileId: batchData.output_file_id, icon: FileOutput },
+              { label: 'Error File', fileId: batchData.error_file_id, icon: FileWarning }
+            ].map(({ label, fileId, icon: Icon }) => fileId && (
+              <Fragment key={label}>
+                <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+                  <Icon className="h-4 w-4 flex-shrink-0" />
+                  <span>{label}</span>
+                </h3>
+                <a href={`/files/${fileId}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline">
+                  <span 
+                    className="text-sm text-primary"
+                  >
+                    {fileId}
+                  </span>
+                  <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                </a>
+              </Fragment>
+            ))}
+          </div>
         </div>
 
-        {/* Timeline section */}
-        <div>
-          <h3 className="text-sm text-muted-foreground mb-2">Timeline</h3>
-          {/* Timeline will go here */}
+        <hr className="my-6" />
+
+        <div className="space-y-8">
+          {/* Date header */}
+          <div className="text-sm text-muted-foreground">
+            {new Date(timelineEvents[0]?.timestamp * 1000).toLocaleDateString('zh-CN', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              weekday: 'long'
+            })}
+          </div>
+
+          {/* Timeline events */}
+          {timelineEvents.map((event, index) => (
+            <div key={event.status} className="flex items-start">
+              {/* Time column */}
+              <div className="flex-none w-[90px] text-muted-foreground">
+                <time className="text-sm font-mono">
+                  {new Date(event.timestamp * 1000).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                  })}
+                </time>
+              </div>
+              
+              {/* Timeline point and text */}
+              <div className="relative flex items-center">
+                {/* Vertical line */}
+                {index !== timelineEvents.length - 1 && (
+                  <div 
+                    className="absolute left-[6px] top-[24px] h-[40px] w-[2px]" 
+                    style={{ 
+                      background: 'linear-gradient(to bottom, rgb(229 231 235) 50%, transparent 50%)',
+                      backgroundSize: '2px 6px'
+                    }} 
+                  />
+                )}
+                {/* Timeline point container */}
+                <div className="w-[14px] mr-4 relative">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 h-[14px] w-[14px] rounded-full bg-background border-[3px] border-foreground" />
+                </div>
+                {/* Event text */}
+                <span className="text-base font-normal text-foreground">
+                  Batch {event.status.replace(/_/g, ' ')}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        </div>
+      </div>
+      <div className="flex-none h-fit">
+        <hr />
+        <div className="px-6 p-2 min-h-14">
+          {batchData.status !== 'completed' && batchData.status !== 'failed' && batchData.status !== 'cancelled' && (
+            <Button variant="destructive">
+              <span>Cancel Batch</span>
+            </Button>
+          )}
+          {(batchData.status === 'completed' || batchData.status === 'failed' || batchData.status === 'cancelled') && (
+            <Button variant="outline">
+              <span>Download Output</span>
+            </Button>
+          )}
         </div>
       </div>
     </div>
-  )
+  );
+}
+
+function getCompletionTime(startDate: number, endDate: number): string {
+  const diff = Math.abs(endDate - startDate);
+
+  const hours = Math.floor(diff / (60 * 60));
+  const minutes = Math.floor((diff % (60 * 60)) / 60);
+
+  if (hours === 0) {
+    return `${minutes} minutes`;
+  }
+  return `${hours} hours, ${minutes} minutes`;
 }
