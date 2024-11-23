@@ -2,6 +2,9 @@ import React from "react";
 import { BatchList } from "./components/BatchList"
 import { listBatches } from "@/lib/openai/list-batches"
 import { BatchesProvider } from "./BatchesContext";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { CreateBatchDialog } from "./components/CreateBatchDialog";
 
 export const runtime = "edge";
 
@@ -19,12 +22,10 @@ export default async function BatchesLayout({
         <div className="flex items-center justify-between p-4 border-b">
             <h1 className="text-xl font-semibold">Batches</h1>
             <div className="flex gap-2">
-            <button className="text-sm text-muted-foreground hover:text-foreground">
-                Learn more
-            </button>
-            <button className="px-3 py-1 text-sm bg-primary text-primary-foreground rounded-md">
-                Create
-            </button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="https://platform.openai.com/docs/guides/batch" target="_blank" rel="noreferrer noopener">Learn more</Link>
+            </Button>
+            <CreateBatchDialog />
             </div>
         </div>
 

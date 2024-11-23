@@ -39,6 +39,13 @@ export default async function FilePage({ params }: FilePageProps) {
           {/* Status section */}
           <div className="space-y-4">
             <div className="grid grid-cols-[160px_1fr] gap-4">
+              {/* ID row */}
+              <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+                <FileText className="h-4 w-4 flex-shrink-0" />
+                <span>ID</span>
+              </h3>
+              <p className="text-sm break-all">{fileData.id}</p>
+                
               {/* Status row */}
               <h3 className="text-xs text-muted-foreground flex items-center gap-2">
                 <FileText className="h-4 w-4 flex-shrink-0" />

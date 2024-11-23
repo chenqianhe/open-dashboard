@@ -29,7 +29,7 @@ export const listBatches = async (
       after: offset > 0 ? String(offset) : undefined
     });
 
-    await kv.put(cacheKey, JSON.stringify(response.data), { expirationTtl: 60 * 60 * 1 });
+    await kv.put(cacheKey, JSON.stringify(response.data), { expirationTtl: 60 * 5 });
 
     return {
       success: true as const,
