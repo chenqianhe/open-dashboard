@@ -4,6 +4,7 @@ import { listFiles } from "@/lib/openai/list-files";
 import { FilesProvider } from "./FilesContext";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { FileUploadDialog } from "./components/FileUploadDialog";
 
 export const runtime = "edge";
 
@@ -22,9 +23,9 @@ export default async function FilesLayout({
           <h1 className="text-xl font-semibold">Files</h1>
           <div className="flex gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/docs/files">Learn more</Link>
+              <Link href="https://platform.openai.com/docs/api-reference/files/create" target="_blank" rel="noreferrer noopener">Learn more</Link>
             </Button>
-            <Button size="sm">Upload</Button>
+            <FileUploadDialog />
           </div>
         </div>
 
