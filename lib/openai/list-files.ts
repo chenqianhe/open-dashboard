@@ -25,6 +25,7 @@ export const listFiles = async (
   const openai = new OpenAI({ apiKey: config.apiKey, baseURL: config.baseUrl });
   try {
     const response = await openai.files.list({
+      order: "desc",
       limit,
       after: offset > 0 ? String(offset) : undefined
     });
