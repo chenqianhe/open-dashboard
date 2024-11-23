@@ -14,8 +14,9 @@ import {
   ExternalLink
 } from "lucide-react";
 import { Fragment } from 'react';
-import { Button } from "@/components/ui/button";
 import { CancelBatchButton } from "../components/CancelBatchButton";
+import { DownloadOutputButton } from "../components/DownloadOutputButton";
+import Link from "next/link";
 
 export const runtime = "edge";
 
@@ -128,14 +129,18 @@ export default async function BatchPage({ params }: BatchPageProps) {
                   <Icon className="h-4 w-4 flex-shrink-0" />
                   <span>{label}</span>
                 </h3>
-                <a href={`/files/${fileId}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline">
+                <Link
+                  href={`/files/${fileId}`} 
+                  target="_blank"
+                  className="flex items-center gap-1 hover:underline"
+                >
                   <span 
                     className="text-sm text-primary"
                   >
                     {fileId}
                   </span>
                   <ExternalLink className="h-4 w-4 flex-shrink-0" />
-                </a>
+                </Link>
               </Fragment>
             ))}
           </div>
@@ -199,11 +204,15 @@ export default async function BatchPage({ params }: BatchPageProps) {
         <hr />
         <div className="px-6 p-2 min-h-14">
           {batchData.status !== 'cancelled' && batchData.status !== 'completed' && batchData.status !== 'failed' && <CancelBatchButton batchId={batchId} />}
-          {(batchData.status === 'completed' || batchData.status === 'failed' || batchData.status === 'cancelled') && (
-            <Button variant="outline">
-              <span>Download Output</span>
-            </Button>
-          )}
+          {(batchData.status === 'completed' || 
+            batchData.status === 'failed' || 
+            batchData.status === 'cancelled') && 
+            (batchData.output_file_id || batchData.error_file_id) && (
+              <DownloadOutputButton fileId={batchData.output_file_id || batchData.error_file_id!}>
+                Download Output
+              </DownloadOutputButton>
+            )
+          }
         </div>
       </div>
     </div>
