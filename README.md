@@ -1,6 +1,6 @@
 # Open Dashboard
 
-An open-source dashboard for managing and monitoring OpenAI API operations and file processing tasks.
+An dashboard for managing and monitoring OpenAI Batch API operations and file processing tasks.
 
 <div style="display: flex; gap: 10px; justify-content: space-between; margin: 20px 0;">
   <img src="img/000.png" alt="Screenshot 0" width="30%" />
