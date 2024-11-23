@@ -2,23 +2,32 @@
 
 import { useSelectedLayoutSegment } from "next/navigation";
 import OpenAI from "openai";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 export const BatchesContext = createContext<{
     batches: OpenAI.Batches.Batch[],
-    selectedBatchId?: string
-}>({ batches: [] });
+    selectedBatchId?: string,
+    setBatches: (batches: OpenAI.Batches.Batch[]) => void;
+}>({ batches: [], setBatches: () => {} });
 
 export function BatchesProvider({ 
   children, 
-  batches 
+  initialBatches 
 }: { 
   children: React.ReactNode; 
-  batches: OpenAI.Batches.Batch[]; 
+  initialBatches: OpenAI.Batches.Batch[]; 
 }) {
   const segment = useSelectedLayoutSegment()
+  const [batches, setBatchesState] = useState(initialBatches);
+
   return (
-    <BatchesContext.Provider value={{ batches, selectedBatchId: segment ?? undefined }}>
+    <BatchesContext.Provider value={{ 
+        batches, 
+        selectedBatchId: segment ?? undefined,
+        setBatches: (batches) => {
+            setBatchesState(batches);
+        }
+    }}>
       {children}
     </BatchesContext.Provider>
   );

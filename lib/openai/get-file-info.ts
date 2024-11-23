@@ -12,7 +12,7 @@ export async function getFileInfo(fileId: string) {
     const cached = await kv.get(cacheKey, "json");
     if (cached) {
         return {
-            success: true as const,
+        success: true as const,
             data: cached as OpenAI.Files.FileObject
         };
     }

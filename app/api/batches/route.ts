@@ -1,11 +1,21 @@
 import { getBatchesKeyPerfix } from "@/common/key/get-key";
 import { CreateBatchSchema } from "@/common/type/create-batch";
 import { getBaseUrlAndKey } from "@/lib/get-baseurl-and-key";
+import { listBatches } from "@/lib/openai/list-batches";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 export const runtime = "edge";
+
+
+export const GET = async (request: Request) => {
+    const { searchParams } = new URL(request.url);
+    const offset = searchParams.get("offset") || "0";
+    const limit = searchParams.get("limit") || "20";
+    const refresh = searchParams.get("refresh") === "true";
+    return NextResponse.json(await listBatches(parseInt(offset), parseInt(limit), refresh));
+}
 
 export const POST = async (request: Request) => {
     const body = await request.json();

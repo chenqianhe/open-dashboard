@@ -1,7 +1,7 @@
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import OpenAI from "openai";
 import { getBaseUrlAndKey } from "../get-baseurl-and-key";
-import { getBatchKey } from "@/common/key/get-key";
+import { getBatchesKeyPerfix, getBatchKey } from "@/common/key/get-key";
 
 
 export async function getBatchDetail(batchId: string) {
@@ -22,7 +22,10 @@ export async function getBatchDetail(batchId: string) {
         const response = await openai.batches.retrieve(batchId);
 
         if (response.status === "completed" || response.status === "cancelled" || response.status === "failed" || response.status === "expired") {
-            await kv.put(cacheKey, JSON.stringify(response), { expirationTtl: 60 * 60 * 30 });
+            const needClean = await kv.list({ prefix: getBatchesKeyPerfix(config.apiKey) });
+            await Promise.all([...needClean.keys.map(async (key) => {
+                await kv.delete(key.name);
+            }), kv.put(cacheKey, JSON.stringify(response), { expirationTtl: 60 * 60 * 24 * 30 })]);
         }
 
         return {

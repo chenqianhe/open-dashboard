@@ -18,6 +18,7 @@ import { CancelBatchButton } from "../components/CancelBatchButton";
 import { DownloadOutputButton } from "../components/DownloadOutputButton";
 import Link from "next/link";
 import { getFileInfo } from "@/lib/openai/get-file-info";
+import { RefreshButton } from "../components/RefreshButton";
 
 export const runtime = "edge";
 
@@ -73,8 +74,13 @@ export default async function BatchPage({ params }: BatchPageProps) {
       <div className="flex-1 p-6 overflow-auto">
         <div className="space-y-6">
         <div>
-          <h2 className="text-sm text-muted-foreground">BATCH</h2>
-          <h1 className="text-2xl font-semibold mt-1 break-all">{batchId}</h1>
+          <div className="flex flex-col ">
+            <div className="flex items-center gap-1">
+              {batchData.status !== 'completed' && batchData.status !== 'failed' && batchData.status !== 'cancelled' && batchData.status !== 'expired' && <RefreshButton />}
+              <h2 className="text-sm text-muted-foreground">BATCH</h2>
+            </div>
+            <h1 className="text-2xl font-semibold mt-1 break-all">{batchId}</h1>
+          </div>
         </div>
 
         {/* Status section */}

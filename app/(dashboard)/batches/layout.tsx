@@ -5,6 +5,7 @@ import { BatchesProvider } from "./BatchesContext";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { CreateBatchDialog } from "./components/CreateBatchDialog";
+import { RefreshBatchesButton } from "./components/RefreshBatchesButton";
 
 export const runtime = "edge";
 
@@ -16,16 +17,19 @@ export default async function BatchesLayout({
   const batchesResult = await listBatches();
 
   return (
-    <BatchesProvider batches={batchesResult.success ? batchesResult.data : []}>
+    <BatchesProvider initialBatches={batchesResult.success ? batchesResult.data : []}>
       <div className="flex-1 flex flex-col h-full min-h-0">
           {/* Header - full width */}
         <div className="flex items-center justify-between p-4 border-b">
-            <h1 className="text-xl font-semibold">Batches</h1>
+            <div className="flex items-center gap-2">
+                <h1 className="text-xl font-semibold">Batches</h1>
+                <RefreshBatchesButton />
+            </div>
             <div className="flex gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="https://platform.openai.com/docs/guides/batch" target="_blank" rel="noreferrer noopener">Learn more</Link>
-            </Button>
-            <CreateBatchDialog />
+                <Button variant="ghost" size="sm" asChild>
+                    <Link href="https://platform.openai.com/docs/guides/batch" target="_blank" rel="noreferrer noopener">Learn more</Link>
+                </Button>
+                <CreateBatchDialog />
             </div>
         </div>
 
@@ -34,13 +38,7 @@ export default async function BatchesLayout({
             {/* Left sidebar - 50% width */}
             <div className="border-r min-h-0">
                 <nav className="overflow-y-auto h-full w-full">
-                    {batchesResult.success ? (
-                    <BatchList batches={batchesResult.data} />
-                    ) : (
-                    <div className="p-4 text-sm text-red-600">
-                        Failed to load batches
-                    </div>
-                    )}
+                    <BatchList />
                 </nav>
             </div>
 

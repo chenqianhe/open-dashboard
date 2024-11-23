@@ -7,7 +7,13 @@ export const listBatches = async (
   offset: number = 0,
   limit: number = 20,
   refresh: boolean = false
-) => {
+): Promise<{
+  success: true;
+  data: OpenAI.Batches.Batch[];
+} | {
+  success: false;
+  error: string;
+}> => {
   const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
   const config = await getBaseUrlAndKey(kv);
 
@@ -29,7 +35,7 @@ export const listBatches = async (
       after: offset > 0 ? String(offset) : undefined
     });
 
-    await kv.put(cacheKey, JSON.stringify(response.data), { expirationTtl: 60 * 5 });
+    await kv.put(cacheKey, JSON.stringify(response.data), { expirationTtl: 60 * 60 * 24 });
 
     return {
       success: true as const,

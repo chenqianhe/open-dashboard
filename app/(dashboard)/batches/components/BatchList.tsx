@@ -2,20 +2,16 @@
 
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import type { OpenAI } from "openai"
 import { useBatches } from "../BatchesContext";
 import { BatchStatusBadge } from "./BatchStatusBadge";
 
-interface BatchListProps {
-  batches: OpenAI.Batches.Batch[]
-}
-
-export function BatchList({ batches }: BatchListProps) {
-  const { selectedBatchId } = useBatches();
+export function BatchList() {
+  const { batches, selectedBatchId } = useBatches();
   return (
-    <div className="divide-y">
-      {batches.map((batch) => (
-        <Link
+    batches.length > 0 ? (
+      <div className="divide-y">
+        {batches.map((batch) => (
+          <Link
           key={batch.id}
           href={`/batches/${batch.id}`}
           className={cn(
@@ -35,7 +31,12 @@ export function BatchList({ batches }: BatchListProps) {
             <BatchStatusBadge status={batch.status} />
           </div>
         </Link>
-      ))}
-    </div>
+        ))}
+      </div>
+    ) : (
+      <div className="p-4 text-sm text-red-600">
+        Failed to load batches
+      </div>
+    )
   )
 }
