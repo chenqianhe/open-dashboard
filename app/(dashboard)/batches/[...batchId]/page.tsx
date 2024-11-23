@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Fragment } from 'react';
 import { Button } from "@/components/ui/button";
+import { CancelBatchButton } from "../components/CancelBatchButton";
 
 export const runtime = "edge";
 
@@ -197,11 +198,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
       <div className="flex-none h-fit">
         <hr />
         <div className="px-6 p-2 min-h-14">
-          {batchData.status !== 'completed' && batchData.status !== 'failed' && batchData.status !== 'cancelled' && (
-            <Button variant="destructive">
-              <span>Cancel Batch</span>
-            </Button>
-          )}
+          {batchData.status !== 'cancelled' && batchData.status !== 'completed' && batchData.status !== 'failed' && <CancelBatchButton batchId={batchId} />}
           {(batchData.status === 'completed' || batchData.status === 'failed' || batchData.status === 'cancelled') && (
             <Button variant="outline">
               <span>Download Output</span>
