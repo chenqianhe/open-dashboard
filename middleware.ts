@@ -52,7 +52,6 @@ export async function middleware(request: NextRequest) {
 }
 
 async function checkAuth(token: string): Promise<boolean> {
-  return true;
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined");
