@@ -42,6 +42,7 @@ export function DeleteFileButton({ fileId }: DeleteFileButtonProps) {
         title: 'File deleted successfully',
       });
       router.push('/files');
+      router.refresh();
     } catch (error) {
       toast({
         title: 'Failed to delete file',
