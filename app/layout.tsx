@@ -3,7 +3,6 @@ import { Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ModeToggle } from "@/components/ModeToggle";
 
 const notoSc = Noto_Sans_SC({
   subsets: ["latin", "cyrillic", "latin-ext", "vietnamese"],
