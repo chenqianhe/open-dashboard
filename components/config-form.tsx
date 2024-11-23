@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ConfigSchema, configSchema } from "@/common/type/config";
+import { useToast } from "@/hooks/use-toast";
 
 type ConfigFormProps = {
   initialData?: {
@@ -23,10 +24,11 @@ type ConfigFormProps = {
 };
 
 export function ConfigForm({ initialData }: ConfigFormProps) {
+  const { toast } = useToast();
   const form = useForm<ConfigSchema>({
     resolver: zodResolver(configSchema),
     defaultValues: {
-      baseUrl: initialData?.baseUrl || "",
+      baseUrl: initialData?.baseUrl || "https://api.openai.com/v1",
       apiKey: initialData?.apiKey || "",
     },
   });
@@ -42,28 +44,42 @@ export function ConfigForm({ initialData }: ConfigFormProps) {
       });
       
       if (response.ok) {
-        // TODO: add success tip
-        console.log('Config saved successfully');
+        toast({
+          title: "Success",
+          description: "Configuration saved successfully",
+          variant: "default",
+        });
       } else {
-        // TODO: add error tip
-        console.error('Failed to save config');
+        toast({
+          title: "Error",
+          description: "Failed to save configuration",
+          variant: "destructive",
+        });
       }
-    } catch (error) {
-      console.error('Error saving config:', error);
+    } catch {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         <FormField
           control={form.control}
           name="baseUrl"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Base URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://api.openai.com/v1" {...field} />
+                <Input 
+                  className="w-full" 
+                  placeholder="https://api.openai.com/v1" 
+                  {...field} 
+                />
               </FormControl>
               <FormDescription>
                 Please enter the base URL of the API
@@ -77,10 +93,15 @@ export function ConfigForm({ initialData }: ConfigFormProps) {
           control={form.control}
           name="apiKey"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>API Key</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="sk-..." {...field} />
+                <Input 
+                  className="w-full"
+                  type="password" 
+                  placeholder="sk-..." 
+                  {...field} 
+                />
               </FormControl>
               <FormDescription>
                 Please enter your API Key

@@ -7,9 +7,18 @@ export default async function ConfigPage() {
   const config = await getConfig();
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">API Configuration</h2>
-      <ConfigForm initialData={config || undefined} />
+    <div className="container flex items-start justify-center min-h-[calc(100vh-4rem)] pt-36">
+      <div className="w-full max-w-3xl space-y-6">
+        <div className="flex flex-col space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight">API Configuration</h2>
+          <p className="text-muted-foreground">
+            Configure your OpenAI API settings
+          </p>
+        </div>
+        <div className="border rounded-lg p-6">
+          <ConfigForm initialData={config || undefined} />
+        </div>
+      </div>
     </div>
   );
 }
