@@ -2,20 +2,11 @@ export const runtime = "edge";
 
 interface BatchPageProps {
   params: {
-    batchId?: string[]
+    batchId: string[]
   }
 }
 
 export default function BatchPage({ params }: BatchPageProps) {
-  // If no batchId is provided, show a default state
-  if (!params.batchId) {
-    return (
-      <div className="h-full flex items-center justify-center text-muted-foreground">
-        Select a batch to view details
-      </div>
-    )
-  }
-
   const batchId = params.batchId[0]
 
   return (
