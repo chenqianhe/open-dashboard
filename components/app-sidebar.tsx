@@ -35,7 +35,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Open Dashboard</SidebarGroupLabel>
+          <SidebarGroupLabel>DASHBOARD</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

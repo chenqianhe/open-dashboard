@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ModeToggle } from "@/components/ModeToggle";
 
 const notoSc = Noto_Sans_SC({
   subsets: ["latin", "cyrillic", "latin-ext", "vietnamese"],
@@ -20,12 +22,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${notoSc.className} antialiased`}
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
       >
-        {children}
-        <Toaster />
-      </body>
+        <body
+          className={`${notoSc.className} antialiased`}
+        >
+          {children}
+          <Toaster />
+        </body>
+      </ThemeProvider>
     </html>
   );
 }

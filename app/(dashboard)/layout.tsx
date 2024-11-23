@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export default function DashboardLayout({
   children,
@@ -15,6 +16,8 @@ export default function DashboardLayout({
           <div className="flex-none flex flex-row items-center gap-2">
             <SidebarTrigger />
             <BreadcrumbNav />
+            <div className="flex-1" />
+            <ModeToggle />
           </div>
           {children}
         </main>
