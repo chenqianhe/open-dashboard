@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server";
 const PROTECTED_ROUTES = ["/config", "/batches", "/files"];
 const PROTECTED_API_ROUTES = ["/api/config", "/api/batches", "/api/files"];
 const PUBLIC_ROUTES = ["/"];
-const PUBLIC_API_ROUTES = ["/api/auth"];
+const PUBLIC_API_ROUTES = ["/api/auth/login"];
 const DEFAULT_REDIRECT = "/";
 
 export async function middleware(request: NextRequest) {
@@ -52,7 +52,6 @@ export async function middleware(request: NextRequest) {
 }
 
 async function checkAuth(token: string): Promise<boolean> {
-  return true;
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined");
