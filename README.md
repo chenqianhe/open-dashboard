@@ -15,6 +15,7 @@ An dashboard for managing and monitoring OpenAI Batch API operations and file pr
 
 ## Features
 
+- 🔄 Multi-Project Support: Save and switch between multiple project configurations, each with its own base URL and API key
 - 🔌 API Flexibility: Support custom base URLs and API keys for OpenAI API and compatible third-party services
 - 🤖 Batch Operations: Streamlined interface for managing batch API requests
 - 📁 File Management: Upload and process files for API operations
