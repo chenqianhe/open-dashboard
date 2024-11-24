@@ -47,7 +47,7 @@ export const POST = async (request: Request, { params }: { params: { projId: str
 
         const needClean = await kv.list({ prefix: getBatchesKeyPerfix(apiKey) });
         await Promise.all(needClean.keys.map(async (key) => {
-            await kv.delete(key.name);
+            kv.delete(key.name);
         }));
 
         return NextResponse.json(response);
