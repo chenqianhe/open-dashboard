@@ -3,9 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Constants for route management
-const PROTECTED_ROUTES = ["/config", "/batches", "/files"];
-const PROTECTED_API_ROUTES = ["/api/config", "/api/batches", "/api/files"];
-const PUBLIC_ROUTES = ["/"];
+const PROTECTED_ROUTES = ["/config", "/proj"];
 const PUBLIC_API_ROUTES = ["/api/auth/login"];
 const DEFAULT_REDIRECT = "/";
 
@@ -40,7 +38,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/proj", request.url));
     }
 
-    if (!isAuthenticated && PROTECTED_ROUTES.includes(pathname)) {
+    if (!isAuthenticated && PROTECTED_ROUTES.some(route => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL(DEFAULT_REDIRECT, request.url));
     }
 
