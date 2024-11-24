@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { ConfigSchema, configSchema } from "@/common/type/config";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type ConfigFormProps = {
   projId: string;
@@ -29,6 +30,7 @@ type ConfigFormProps = {
 export function ConfigForm({ projId, initialData }: ConfigFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const form = useForm<ConfigSchema>({
     resolver: zodResolver(configSchema),
@@ -70,6 +72,39 @@ export function ConfigForm({ projId, initialData }: ConfigFormProps) {
         description: "An unexpected error occurred",
         variant: "destructive",
       });
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      setIsDeleting(true);
+      const response = await fetch(`/api/projects/${projId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Configuration deleted successfully",
+          variant: "default",
+        });
+        router.push('/proj');
+        router.refresh();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to delete configuration",
+          variant: "destructive",
+        });
+      }
+    } catch {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -141,7 +176,17 @@ export function ConfigForm({ projId, initialData }: ConfigFormProps) {
           )}
         />
         
-        <Button type="submit">Save</Button>
+        <div className="flex space-x-4">
+          <Button type="submit">Save</Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

@@ -6,9 +6,13 @@ export const getProjKey = (projId: string) => `${getProjKeyPerfix()}:${projId}`;
 
 export const getConfigKey = (projId: string) => `${getProjKey(projId)}:config`;
 
-export const getBatchKey = (apiKey: string, batchId: string) => `apiKey:${apiKey}:batch:${batchId}`;
+export const getBatchKeyPerfix = (apiKey: string) => `apiKey:${apiKey}:batch`;
 
-export const getFileInfoKey = (apiKey: string, fileId: string) => `apiKey:${apiKey}:file:${fileId}`;
+export const getBatchKey = (apiKey: string, batchId: string) => `${getBatchKeyPerfix(apiKey)}:${batchId}`;
+
+export const getFileInfoKeyPerfix = (apiKey: string) => `apiKey:${apiKey}:file`;
+
+export const getFileInfoKey = (apiKey: string, fileId: string) => `${getFileInfoKeyPerfix(apiKey)}:${fileId}`;
 
 export const getBatchesKeyPerfix = (apiKey: string) => `apiKey:${apiKey}:batches`;
 
