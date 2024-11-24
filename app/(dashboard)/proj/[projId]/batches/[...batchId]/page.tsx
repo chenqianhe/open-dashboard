@@ -96,6 +96,19 @@ export default async function BatchPage({ params }: BatchPageProps) {
                 <BatchStatusBadge status={batchData.status} />
             </div>
 
+            {/* Errors row */}
+            {batchData.errors && batchData.errors.data && batchData.errors.data.length > 0 && (
+              <Fragment>
+                <h3 className="text-xs text-muted-foreground flex items-center gap-2">
+                  <FileWarning className="h-4 w-4 flex-shrink-0" />
+                  <span>Errors</span>
+                </h3>
+                <div className="text-sm text-red-500">
+                  {batchData.errors.data.map(error => error.message).join(", ")}
+                </div>
+              </Fragment>
+            )}
+
             {/* Created at row */}
             <h3 className="text-xs text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4 flex-shrink-0" />
