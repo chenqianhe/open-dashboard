@@ -15,19 +15,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { ConfigSchema, configSchema } from "@/common/type/config";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 type ConfigFormProps = {
+  projId: string;
   initialData?: {
+    name?: string;
     baseUrl?: string;
     apiKey?: string;
   };
 };
 
-export function ConfigForm({ initialData }: ConfigFormProps) {
+export function ConfigForm({ projId, initialData }: ConfigFormProps) {
   const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<ConfigSchema>({
     resolver: zodResolver(configSchema),
     defaultValues: {
+      projId,
+      name: initialData?.name || "",
       baseUrl: initialData?.baseUrl || "https://api.openai.com/v1",
       apiKey: initialData?.apiKey || "",
     },
@@ -49,6 +56,7 @@ export function ConfigForm({ initialData }: ConfigFormProps) {
           description: "Configuration saved successfully",
           variant: "default",
         });
+        router.refresh();
       } else {
         toast({
           title: "Error",
@@ -68,6 +76,28 @@ export function ConfigForm({ initialData }: ConfigFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Project Name</FormLabel>
+              <FormControl>
+                <Input 
+                  className="w-full" 
+                  placeholder="Project Name" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                Please enter the project name
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+
         <FormField
           control={form.control}
           name="baseUrl"

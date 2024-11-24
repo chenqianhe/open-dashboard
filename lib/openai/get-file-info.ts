@@ -4,9 +4,9 @@ import { getBaseUrlAndKey } from "../get-baseurl-and-key";
 import { getFileInfoKey } from "@/common/key/get-key";
 
 
-export async function getFileInfo(fileId: string) {
+export async function getFileInfo(projId: string, fileId: string) {
     const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
-    const config = await getBaseUrlAndKey(kv);
+    const config = await getBaseUrlAndKey(kv, projId);
 
     const cacheKey = getFileInfoKey(config.apiKey, fileId);
     const cached = await kv.get(cacheKey, "json");

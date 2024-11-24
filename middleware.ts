@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
 
     // Handle page routes
     if (isAuthenticated && pathname === DEFAULT_REDIRECT) {
-      return NextResponse.redirect(new URL("/config", request.url));
+      return NextResponse.redirect(new URL("/proj", request.url));
     }
 
     if (!isAuthenticated && PROTECTED_ROUTES.includes(pathname)) {
@@ -52,6 +52,9 @@ export async function middleware(request: NextRequest) {
 }
 
 async function checkAuth(token: string): Promise<boolean> {
+  if (process.env.NODE_ENV === 'development') {
+    return true;
+  }
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined");

@@ -1,4 +1,10 @@
-export const getConfigKey = () => "api_config";
+export const getProjKeyPerfix = () => `proj`;
+
+export const getProjectsKey = () => `projs`;
+
+export const getProjKey = (projId: string) => `${getProjKeyPerfix()}:${projId}`;
+
+export const getConfigKey = (projId: string) => `${getProjKey(projId)}:config`;
 
 export const getBatchKey = (apiKey: string, batchId: string) => `apiKey:${apiKey}:batch:${batchId}`;
 

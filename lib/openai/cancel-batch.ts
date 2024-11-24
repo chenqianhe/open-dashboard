@@ -4,9 +4,9 @@ import { getBaseUrlAndKey } from "../get-baseurl-and-key";
 import OpenAI from "openai";
 
 
-export async function cancelBatch(batchId: string) {
+export async function cancelBatch(projId: string, batchId: string) {
     const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
-    const { apiKey, baseUrl } = await getBaseUrlAndKey(kv);
+    const { apiKey, baseUrl } = await getBaseUrlAndKey(kv, projId);
     const openai = new OpenAI({
         baseURL: baseUrl,
         apiKey,

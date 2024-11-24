@@ -4,9 +4,9 @@ import { getBaseUrlAndKey } from "../get-baseurl-and-key";
 import { getBatchesKeyPerfix, getBatchKey } from "@/common/key/get-key";
 
 
-export async function getBatchDetail(batchId: string) {
+export async function getBatchDetail(projId: string, batchId: string) {
     const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
-    const config = await getBaseUrlAndKey(kv);
+    const config = await getBaseUrlAndKey(kv, projId);
 
     const cacheKey = getBatchKey(config.apiKey, batchId);
     const cached = await kv.get(cacheKey, "json");

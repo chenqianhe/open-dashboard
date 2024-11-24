@@ -1,3 +1,5 @@
+'use client';
+
 import { Inbox, File, Settings } from "lucide-react"
 
 import {
@@ -10,29 +12,33 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-// Menu items.
-const items = [
-  {
-    title: "Config",
-    url: "/config",
-    icon: Settings,
-  },
-  {
-    title: "Batches",
-    url: "/batches",
-    icon: Inbox,
-  },
-  {
-    title: "Files",
-    url: "/files",
-    icon: File,
-  },
-]
+import { AppSidebarHeader } from "./app-sidebar-header"
+import Link from "next/link"
+import { useProjects } from "@/app/(dashboard)/proj/project-context";
 
 export function AppSidebar() {
+  const { projects, currentProjectId } = useProjects();
+
+  const items = [
+    {
+      title: "Config",
+      url: `/proj/${currentProjectId}/config`,
+      icon: Settings,
+    },
+    {
+      title: "Batches",
+      url: `/proj/${currentProjectId}/batches`,
+      icon: Inbox,
+    },
+    {
+      title: "Files",
+      url: `/proj/${currentProjectId}/files`,
+      icon: File,
+    },
+  ]
   return (
     <Sidebar>
+      <AppSidebarHeader />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>DASHBOARD</SidebarGroupLabel>
@@ -40,11 +46,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton asChild disabled={!currentProjectId || !projects.find(p => p.id === currentProjectId)}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

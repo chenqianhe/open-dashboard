@@ -1,10 +1,15 @@
 import { NextResponse } from 'next/server';
 import { setConfig } from '@/lib/kv';
 import { configSchema } from '@/common/type/config';
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { getProjectsKey } from '@/common/key/get-key';
+import { Project } from '@/common/type/project';
 
 export const runtime = 'edge';
 
 export async function POST(request: Request) {
+  const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
+
   try {
     const body = await request.json();
     
@@ -13,19 +18,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
 
-    const { baseUrl, apiKey } = result.data;
+    const { projId, name, baseUrl, apiKey } = result.data;
 
-    if (!baseUrl || !apiKey) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    const projects = ((await kv.get<Project[]>(getProjectsKey(), "json")) ?? []).filter(p => p.id !== projId);
 
-    const success = await setConfig({
-      baseUrl,
-      apiKey,
-    });
+    const success = await Promise.all([
+      setConfig(projId, {
+        name,
+        baseUrl,
+        apiKey,
+      }),
+      kv.put(getProjectsKey(), JSON.stringify([{ id: projId, name }, ...projects])),
+    ]);
 
     if (success) {
       return NextResponse.json({ status: 'success' });

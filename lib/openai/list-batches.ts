@@ -4,9 +4,16 @@ import { getBaseUrlAndKey } from "../get-baseurl-and-key";
 import { getBatchesKey } from "@/common/key/get-key";
 
 export const listBatches = async (
-  offset: number = 0,
-  limit: number = 20,
-  refresh: boolean = false
+  projId: string,
+  config: {
+    offset: number;
+    limit: number;
+    refresh: boolean;
+  } = {
+    offset: 0,
+    limit: 20,
+    refresh: false
+  }
 ): Promise<{
   success: true;
   data: OpenAI.Batches.Batch[];
@@ -15,10 +22,10 @@ export const listBatches = async (
   error: string;
 }> => {
   const kv = getRequestContext().env.OPEN_DASHBOARD_KV;
-  const config = await getBaseUrlAndKey(kv);
+  const { apiKey, baseUrl } = await getBaseUrlAndKey(kv, projId);
 
-  const cacheKey = getBatchesKey(config.apiKey, offset, limit);
-  if (!refresh) {
+  const cacheKey = getBatchesKey(apiKey, config.offset, config.limit);
+  if (!config.refresh) {
     const cached = await kv.get(cacheKey, "json");
     if (cached) {
       return {
@@ -28,11 +35,11 @@ export const listBatches = async (
     }
   }
 
-  const openai = new OpenAI({ apiKey: config.apiKey, baseURL: config.baseUrl });
+  const openai = new OpenAI({ apiKey: apiKey, baseURL: baseUrl });
   try {
     const response = await openai.batches.list({
-      limit,
-      after: offset > 0 ? String(offset) : undefined
+      limit: config.limit,
+      after: config.offset > 0 ? String(config.offset) : undefined
     });
 
     await kv.put(cacheKey, JSON.stringify(response.data), { expirationTtl: 60 * 60 * 24 });

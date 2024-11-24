@@ -6,24 +6,25 @@ import React from "react";
 
 export function BreadcrumbNav() {
   const pathname = usePathname();
+
+  const segments = pathname.split('/').filter(Boolean);
   
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink href="/proj">Projects</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        {pathname
-          .split('/')
-          .filter(Boolean)
+        {segments
+          .slice(1)
           .map((segment, index, array) => (
             <React.Fragment key={segment}>
               <BreadcrumbItem>
                 {index === array.length - 1 ? (
                   <BreadcrumbPage>{segment}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={`/${array.slice(0, index + 1).join('/')}`}>
+                  <BreadcrumbLink href={`/${segments.slice(0, index + 2).join('/')}`}>
                     {segment}
                   </BreadcrumbLink>
                 )}
