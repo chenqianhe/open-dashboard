@@ -29,7 +29,7 @@ export function DeleteFileButton({ projId, fileId }: DeleteFileButtonProps) {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const response = await fetch(`/proj/${projId}/api/files/${fileId}`, {
+      const response = await fetch(`/api/projects/${projId}/files/${fileId}`, {
         method: 'DELETE',
       });
 

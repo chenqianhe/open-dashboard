@@ -11,7 +11,7 @@ interface DownloadFileButtonProps {
 export function DownloadFileButton({ projId, fileId, children, linkMode = false }: DownloadFileButtonProps) {
     return linkMode ? (
         <a 
-            href={`/proj/${projId}/api/files/${fileId}/content`} 
+            href={`/api/projects/${projId}/files/${fileId}/content`} 
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 hover:underline"
@@ -24,7 +24,7 @@ export function DownloadFileButton({ projId, fileId, children, linkMode = false 
             size="sm"
         >
             <a 
-                href={`/proj/${projId}/api/files/${fileId}/content`} 
+                href={`/api/projects/${projId}/files/${fileId}/content`} 
                 target="_blank" 
                 rel="noopener noreferrer"
             >

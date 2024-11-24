@@ -50,13 +50,7 @@ export default async function FilesLayout({
           {/* Left sidebar */}
           <div className="border-r min-h-0">
             <nav className="overflow-y-auto h-full w-full">
-              {filesResult.success ? (
-                <FileList files={filesResult.data} projId={params.projId} />
-              ) : (
-                <div className="p-4 text-sm text-red-600">
-                  Failed to load files
-                </div>
-              )}
+                <FileList projId={params.projId} />
             </nav>
           </div>
 

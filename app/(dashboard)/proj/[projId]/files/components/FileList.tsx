@@ -5,29 +5,30 @@ import { useFiles } from "../FilesContext";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FileText, HardDrive } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface FileListProps {
-  files: OpenAI.Files.FileObject[];
   projId: string;
 }
 
-export function FileList({ files, projId }: FileListProps) {
-  const { selectedFileId: currentFileId } = useFiles();
+export function FileList({ projId }: FileListProps) {
+  const { selectedFileId: currentFileId, files } = useFiles();
 
-  // Group files by date
-  const groupedFiles = files.reduce((groups, file) => {
-    const date = new Date(file.created_at * 1000).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(file);
-    return groups;
-  }, {} as Record<string, OpenAI.Files.FileObject[]>);
+  const [groupedFiles, setGroupedFiles] = useState<Record<string, OpenAI.Files.FileObject[]>>({});
+
+  useEffect(() => {
+    const grouped = files.reduce((groups, file) => {
+      const date = new Date(file.created_at * 1000).toLocaleDateString();
+
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(file);
+      return groups;
+    }, {} as Record<string, OpenAI.Files.FileObject[]>);
+
+    setGroupedFiles(grouped);
+  }, [files]);
 
   return (
     <div className="divide-y">

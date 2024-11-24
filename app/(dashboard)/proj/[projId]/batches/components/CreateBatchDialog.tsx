@@ -60,8 +60,8 @@ export function CreateBatchDialog({ projId }: { projId: string }) {
         title: "Success",
         description: "Batch created successfully",
       });
-      const { id } = await response.json() as { id: string };
-      router.push(`/proj/${projId}/batches/${id}`);
+
+      router.push(`/proj/${projId}/batches`);
       router.refresh();
       setIsOpen(false);
     } catch (error) {
@@ -141,10 +141,12 @@ export function CreateBatchDialog({ projId }: { projId: string }) {
                       <Label htmlFor="select">Select existing</Label>
                     </div>
                   </RadioGroup>
-                    {inputMethod === "select" && <Link href="/files" target="_blank" rel="noreferrer noopener" className="text-sm text-green-600 flex items-center gap-1">
+                    {inputMethod === "select" &&
+                      <Link href={`/proj/${projId}/files`} target="_blank" rel="noreferrer noopener" className="text-sm text-green-600 flex items-center gap-1">
                         Browse files
                         <ExternalLink className="h-4 w-4 flex-shrink-0 text-green-600" />
-                    </Link>}
+                      </Link>
+                    }
                   </div>
                   
                   <FormControl>

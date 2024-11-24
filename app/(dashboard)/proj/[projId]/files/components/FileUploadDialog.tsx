@@ -51,7 +51,7 @@ export function FileUploadDialog({ projId }: { projId: string }) {
       formData.append("file", renamedFile);
       formData.append("purpose", data.purpose);
 
-      const response = await fetch(`/proj/${projId}/api/files`, {
+      const response = await fetch(`/api/projects/${projId}/files`, {
         method: "POST",
         body: formData,
         signal: AbortSignal.timeout(65000),
@@ -66,6 +66,7 @@ export function FileUploadDialog({ projId }: { projId: string }) {
         title: "Success",
         description: "File uploaded successfully",
       });
+      router.push(`/proj/${projId}/files`);
       router.refresh();
       setIsOpen(false);
     } catch (error) {
