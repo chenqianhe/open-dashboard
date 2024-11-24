@@ -40,7 +40,7 @@ export function LoginForm() {
       });
 
       if (response.ok) {
-        router.push("/config");
+        router.push("/proj");
         router.refresh();
       } else {
         toast({
